@@ -1,9 +1,12 @@
 package com.allstudent.data.model;
 
 
+import com.allstudent.data.exception.validator.NameStart;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+
+import java.util.List;
 
 @Entity
 @Data
@@ -16,5 +19,9 @@ public class School {
     private Integer id;
 
     @Column(nullable = false, length = 50, unique = true)
+    @NameStart(startChar = "_")
     private String name;
+
+    @OneToMany(targetEntity = Student.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Student> students;
 }

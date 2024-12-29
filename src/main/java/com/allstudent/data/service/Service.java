@@ -1,11 +1,11 @@
 package com.allstudent.data.service;
 
 
-import com.allstudent.data.dto.ApiResponse;
+import org.springframework.http.ResponseEntity;
 
 @org.springframework.stereotype.Service
 public interface Service<E,D> {
-    ApiResponse<D> save(D dto);
+    D save(D dto);
     D convertToDto(E entity);
     E convertToEntity(D dto);
 }

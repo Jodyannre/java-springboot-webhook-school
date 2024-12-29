@@ -1,10 +1,8 @@
 package com.allstudent.data.service;
 
-import com.allstudent.data.dto.ApiResponse;
 import com.allstudent.data.dto.SchoolDto;
 import com.allstudent.data.model.School;
 import com.allstudent.data.repository.SchoolRepository;
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -14,9 +12,9 @@ public class SchoolService implements Service<School, SchoolDto> {
     private final SchoolRepository schoolRepository;
 
     @Override
-    public ApiResponse<SchoolDto> save(SchoolDto schoolDto) {
+    public SchoolDto save(SchoolDto schoolDto) {
         School savedSchool = schoolRepository.save(convertToEntity(schoolDto));
-        return new ApiResponse<SchoolDto>(true, "School registered", convertToDto(savedSchool));
+        return convertToDto(savedSchool);
     }
 
     @Override
