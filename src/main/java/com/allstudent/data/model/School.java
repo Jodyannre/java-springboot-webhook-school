@@ -20,6 +20,5 @@ public class School {
     private Integer id;
 
     @Column(nullable = false, length = 50, unique = true)
-    @NameStart(startChar = "_")
     private String name;
 }

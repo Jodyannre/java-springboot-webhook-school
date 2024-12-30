@@ -13,12 +13,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class StudentDto {
-    @NotBlank(message = "Name can't be blank.")
+    @NotBlank(message = "Name can't be blank")
     private String name;
-    @NotNull(message = "Age can't be blank.")
+    @NotNull(message = "Age can't be blank")
     @Min(16)
     private Integer age;
-    @NotNull(message = "School id must be provided")
+    @NotNull(message = "SchoolId must be provided")
     @Min(1)
     private Integer school_id;
 }

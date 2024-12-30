@@ -12,16 +12,21 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @ControllerAdvice
 public class ApiExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex,
                                                           WebRequest req) {
+        Map<String,String> errorMap = new HashMap<>();
+        ex.getBindingResult().getFieldErrors().forEach(error ->
+                errorMap.put(error.getField(), error.getDefaultMessage()));
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
                 ErrorResponse.builder()
-                        .message(ex.getBody().getDetail())
+                        .message(errorMap.values().toString().replace("[", "").replace("]", ""))
                         .statusCode(ex.getBody().getStatus())
                         .title(ex.getBody().getTitle())
                         .url(req.getDescription(false).replace("uri=/",""))
@@ -54,7 +59,7 @@ public class ApiExceptionHandler {
                 ErrorResponse.builder()
                         .message(ex.getMessage())
                         .statusCode(HttpStatus.NOT_FOUND.value())
-                        .title("School not found")
+                        .title("Not found")
                         .url(req.getDescription(false).replace("uri=/",""))
                         .build()
         );

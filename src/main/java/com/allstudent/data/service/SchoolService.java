@@ -1,16 +1,11 @@
 package com.allstudent.data.service;
 
 import com.allstudent.data.dto.SchoolDto;
-import com.allstudent.data.dto.StudentsDto;
-import com.allstudent.data.exception.NotFoundException;
 import com.allstudent.data.model.School;
-import com.allstudent.data.model.Student;
 import com.allstudent.data.repository.SchoolRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Component
 @AllArgsConstructor

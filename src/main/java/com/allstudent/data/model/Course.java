@@ -29,6 +29,6 @@ public class Course {
     @JoinColumn(name = "school_id")
     private School school;
 
-    @OneToMany(targetEntity = Enroll.class, fetch = FetchType.LAZY, mappedBy="courses")
+    @OneToMany(targetEntity = Enroll.class, fetch = FetchType.LAZY, mappedBy="course")
     private Set<Enroll> enrolls = new HashSet<>();
 }

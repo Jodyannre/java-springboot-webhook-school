@@ -2,11 +2,13 @@ package com.allstudent.data.service;
 
 import com.allstudent.data.dto.StudentDto;
 import com.allstudent.data.dto.StudentsDto;
+import com.allstudent.data.exception.Assert;
 import com.allstudent.data.exception.NotFoundException;
 import com.allstudent.data.model.School;
 import com.allstudent.data.model.Student;
 import com.allstudent.data.repository.SchoolRepository;
 import com.allstudent.data.repository.StudentRepository;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -27,7 +29,6 @@ public class StudentService implements Service<Student,StudentDto> {
     @Override
     public StudentDto save(StudentDto studentDto) {
         Student savedStudent = studentRepository.save(convertToEntity(studentDto));
-        //Todo send webhook
         sendWebHook(studentDto.getName()).subscribe(System.out::println);
         return convertToDto(savedStudent);
     }
@@ -51,9 +52,7 @@ public class StudentService implements Service<Student,StudentDto> {
 
     public StudentsDto getStudents(Integer school_id) {
         Optional<School> optional = schoolRepository.findById(school_id);
-        if (optional.isEmpty()) {
-            throw new NotFoundException("School not found");
-        }
+        Assert.entityNotFound(optional.isEmpty(),"School "+school_id);
         School school = optional.get();
         List<Student> students = studentRepository.findBySchool(school);
         return StudentsDto.builder()
@@ -65,15 +64,13 @@ public class StudentService implements Service<Student,StudentDto> {
 
     @Override
     public Student convertToEntity(StudentDto studentDto) {
+        Optional<School> optional = schoolRepository.findById(studentDto.getSchool_id());
+        Assert.entityNotFound(optional.isEmpty(),"School "+studentDto.getSchool_id());
         Student student = new Student();
         student.setName(studentDto.getName());
         student.setAge(studentDto.getAge());
-        Optional<School> school = schoolRepository.findById(studentDto.getSchool_id());
-        if (school.isEmpty()) {
-            throw new NotFoundException(String.format("School with id: %s not found",
-                    studentDto.getSchool_id()));
-        }
-        student.setSchool(school.orElse(null));
+        School school = optional.get();
+        student.setSchool(school);
         return student;
     }
 
