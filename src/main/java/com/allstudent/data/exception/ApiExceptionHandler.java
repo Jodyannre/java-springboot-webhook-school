@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
 @ControllerAdvice
@@ -53,9 +54,35 @@ public class ApiExceptionHandler {
                 ErrorResponse.builder()
                         .message(ex.getMessage())
                         .statusCode(HttpStatus.NOT_FOUND.value())
-                        .title("School not found.")
+                        .title("School not found")
                         .url(req.getDescription(false).replace("uri=/",""))
                         .build()
+        );
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<?> handleIllegalArgumentException(IllegalArgumentException ex,
+                                                             WebRequest req) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                ErrorResponse.builder()
+                .message(ex.getMessage())
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .title("Ilegal arguments in request")
+                .url(req.getDescription(false).replace("uri=/",""))
+                .build()
+        );
+    }
+
+    @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
+    public ResponseEntity<?> handleSQLIntegrityConstraintViolationException(SQLIntegrityConstraintViolationException ex,
+                                                                            WebRequest req) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                ErrorResponse.builder()
+                .message(ex.getMessage())
+                .statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .title("Integrity violation")
+                .url(req.getDescription(false).replace("uri=/",""))
+                .build()
         );
     }
 }
